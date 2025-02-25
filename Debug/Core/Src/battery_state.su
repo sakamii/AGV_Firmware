@@ -1,0 +1,5 @@
+../Core/Src/battery_state.c:3:6:INA219_init	40	static
+../Core/Src/battery_state.c:23:8:get_bus_voltage	48	static
+../Core/Src/battery_state.c:43:8:get_shunt_voltage	48	static
+../Core/Src/battery_state.c:59:8:get_current	48	static
+../Core/Src/battery_state.c:81:6:charge_display	24	static
