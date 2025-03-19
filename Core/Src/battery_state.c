@@ -2,13 +2,13 @@
 
 bool INA219_init(ina219_handle_t* handle){
 	bool success = true;
-
+	// expected_max_current, shunt_resistor 이 두개 값 = main.c에서 설정 
 	handle->Current_LSB = handle->expected_max_current /32768; //2^15 = 32,768
 	handle->Power_LSB = 20 * handle->Current_LSB;
 	handle->Cali_Register = trunc(0.04096 / (handle->Current_LSB * handle->shunt_resistor));
 	//handle->Cali_Register = 0;
 
-	uint16_t data = handle->Cali_Register << 1;
+	uint16_t data = handle->Cali_Register << 1; // 데이터 시트에서 0번비트는 무조건 0이어야한다고 되어있음 
 	uint8_t data_H = data<<8;
 	uint8_t data_L = data&0xFF;
 
@@ -34,6 +34,7 @@ double get_bus_voltage(ina219_handle_t* handle){
 	uint16_t data = (receive_data[0]<<8) + (receive_data[1]&0xFF);
 	data = data >> 3;
 
+	// 시트 참고하면 4 곱해주는거 있음 
 	double ret = (double)data * 4 * TO_MILI;
 
 

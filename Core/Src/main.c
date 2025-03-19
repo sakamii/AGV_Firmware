@@ -109,11 +109,13 @@ uint32_t falling_cnt = 0;
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
     if (GPIO_Pin == PPM_Pin){
-
+        // 라이징에서 콜백이 발동하도록 한 경우
         if(( EXTI->RTSR >> 4) & 0x01){
+            // 현재 타이머의 카운트 값 저장 
             t1= TIM2->CNT;
-
+            
             rising_cnt++;
+            // 폴링 시에 콜백이 발동하도록 바꿈 rtsr을 0으로 ftsr을 1로 설정 
             EXTI->RTSR &= ~((uint32_t)0x01 << 4);
             EXTI->FTSR |= ((uint32_t)0x01 << 4);
         }
@@ -127,11 +129,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
             EXTI->RTSR |= ((uint32_t)0x01 << 4);
             EXTI->FTSR &= ~((uint32_t)0x01 << 4);
         }
-
+        
+        // 대략 4000 이상이면 sync임  
         if(time_interval > 4000){
             rising_cnt = 9;
             falling_cnt = 9;
         }
+
         switch(rising_cnt + falling_cnt){
         case 2:
             channel_data.ch1 = time_interval;
@@ -269,9 +273,6 @@ int main(void)
 	  double vol = get_bus_voltage(&ina219_handler);
 	  charge_display(vol, &LED_handler);
 #endif
-
-
-
 
 
   }
